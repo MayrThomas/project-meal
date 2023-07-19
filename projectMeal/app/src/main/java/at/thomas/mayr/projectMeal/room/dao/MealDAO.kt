@@ -21,4 +21,8 @@ interface MealDAO {
     @Transaction
     @Query("SELECT * FROM Recipe")
     fun getAllRecipes(): LiveData<List<RecipeWithIngredient>>
+
+    @Transaction
+    @Query("SELECT * FROM Recipe ORDER BY recipeId DESC LIMIT 1")
+    fun getLastInsertedRecipe(): Recipe
 }

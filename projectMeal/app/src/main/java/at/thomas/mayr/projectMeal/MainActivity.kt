@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,6 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import at.thomas.mayr.projectMeal.room.MealDatabase
 import at.thomas.mayr.projectMeal.room.MealRepository
+import at.thomas.mayr.projectMeal.room.entities.Ingredient
+import at.thomas.mayr.projectMeal.room.entities.IngredientUnit
+import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
 
@@ -77,18 +79,12 @@ class MainActivity : ComponentActivity() {
             ) {
                 items(recipes) {recipeWithIngredients ->
                     Card(
-                        modifier = Modifier.background(Color.LightGray),
+                        modifier = Modifier.background(Color.LightGray).padding(8.dp),
                         shape = RoundedCornerShape(4.dp)
                     ) {
                         Text(text = recipeWithIngredients.recipe.name)
-                        LazyColumn {
-                            items(recipeWithIngredients.ingredients) { ingredient ->
-                                Row {
-                                    Text(text = ingredient.name)
-                                    Text(text = ingredient.amount.toString())
-                                    ingredient.ingredientUnit?.name?.let { Text(text = it) }
-                                }
-                            }
+                        for (ingredient in recipeWithIngredients.ingredients) {
+                            Text(text = "${ingredient.amount} ${ingredient.ingredientUnit?.name} ${ingredient.name}")
                         }
                     }
                 }
@@ -100,6 +96,19 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.align(Alignment.BottomEnd).padding(16.dp),
                 onClick = {
                     //OnClick Method
+                    val testRecipe = Recipe(name = "TEST-RECIPE-NAME")
+                    val lastRecipe = repository.insertRecipe(testRecipe)
+
+                    val testIngredient = Ingredient(
+                        name = "Tomate",
+                        recipeCreatorId = lastRecipe.recipeId,
+                        ingredientUnit = IngredientUnit.G,
+                        amount = 150f
+                    )
+
+                    repository.insertIngredient(testIngredient)
+                    repository.insertIngredient(testIngredient)
+
                 },
                 containerColor = MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(16.dp)
