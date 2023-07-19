@@ -1,6 +1,7 @@
 package at.thomas.mayr.projectMeal
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -14,9 +15,12 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -46,7 +50,35 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     topBar = { TopAppBar(
                         title = { Text(text = "Recipes")},
-                    )}
+                        colors = TopAppBarDefaults.smallTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    )},
+                    floatingActionButton = {
+                        MealFAB(
+                            icon = Icons.Default.Add,
+                            contentDescription = "Add test recipe",
+                            onClick = {
+                                val testRecipe = Recipe(name = "TEST-RECIPE-NAME")
+                                val lastRecipe = repository.insertRecipe(testRecipe)
+
+                                val testIngredient = Ingredient(
+                                    name = "Tomate",
+                                    recipeCreatorId = lastRecipe.recipeId,
+                                    ingredientUnit = IngredientUnit.G,
+                                    amount = 150f
+                                )
+
+                                repository.insertIngredient(testIngredient)
+                                repository.insertIngredient(testIngredient)
+                            }
+                        )
+                    },
+                    floatingActionButtonPosition = FabPosition.End
                 ) {
                     ScreenSetup(it)
                 }
@@ -83,28 +115,12 @@ class MainActivity : ComponentActivity() {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(recipes) { recipeWithIngredients ->
-                    RecipeGridItem(recipeWithIngredients)
+                    RecipeGridItem(
+                        recipeWithIngredients = recipeWithIngredients,
+                        onClick = { Toast.makeText(applicationContext, "Click on recipe with id ${recipeWithIngredients.recipe.recipeId}", Toast.LENGTH_SHORT).show()}
+                    )
                 }
             }
         }
-
-        MealFAB(
-            icon = Icons.Default.Add,
-            contentDescription = "Add test recipe",
-            onClick = {
-                val testRecipe = Recipe(name = "TEST-RECIPE-NAME")
-                val lastRecipe = repository.insertRecipe(testRecipe)
-
-                val testIngredient = Ingredient(
-                    name = "Tomate",
-                    recipeCreatorId = lastRecipe.recipeId,
-                    ingredientUnit = IngredientUnit.G,
-                    amount = 150f
-                )
-
-                repository.insertIngredient(testIngredient)
-                repository.insertIngredient(testIngredient)
-            }
-        )
     }
 }

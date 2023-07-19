@@ -26,7 +26,7 @@ fun MealFAB(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             onClick = onClick,
-            containerColor = MaterialTheme.colorScheme.secondary,
+            containerColor = MaterialTheme.colorScheme.primary,
             shape = RoundedCornerShape(16.dp)
         ) {
             Icon(
