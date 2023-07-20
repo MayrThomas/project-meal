@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.ui.theme.view.screens
+package at.thomas.mayr.projectMeal.ui.view.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
-import at.thomas.mayr.projectMeal.ui.theme.view.views.MealFAB
+import at.thomas.mayr.projectMeal.ui.view.views.MealFAB
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

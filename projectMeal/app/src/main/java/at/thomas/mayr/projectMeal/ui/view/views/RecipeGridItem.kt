@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.ui.theme.view.views
+package at.thomas.mayr.projectMeal.ui.view.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
