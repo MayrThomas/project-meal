@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.view.screens
+package at.thomas.mayr.projectMeal.ui.theme.view.screens
 
 import android.content.res.Resources
 import androidx.compose.foundation.layout.Arrangement
@@ -24,9 +24,9 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
 import at.thomas.mayr.projectMeal.MainActivity
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
-import at.thomas.mayr.projectMeal.view.views.EmptyRecipeGridItem
-import at.thomas.mayr.projectMeal.view.views.MealFAB
-import at.thomas.mayr.projectMeal.view.views.RecipeGridItem
+import at.thomas.mayr.projectMeal.ui.theme.view.views.EmptyRecipeGridItem
+import at.thomas.mayr.projectMeal.ui.theme.view.views.MealFAB
+import at.thomas.mayr.projectMeal.ui.theme.view.views.RecipeGridItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

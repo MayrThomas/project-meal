@@ -18,8 +18,8 @@ import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
 import at.thomas.mayr.projectMeal.util.Utils
-import at.thomas.mayr.projectMeal.view.screens.MainScreen
-import at.thomas.mayr.projectMeal.view.screens.RecipeScreen
+import at.thomas.mayr.projectMeal.ui.theme.view.screens.MainScreen
+import at.thomas.mayr.projectMeal.ui.theme.view.screens.RecipeScreen
 
 class MainActivity : ComponentActivity() {
 

@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.view.screens
+package at.thomas.mayr.projectMeal.ui.theme.view.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
