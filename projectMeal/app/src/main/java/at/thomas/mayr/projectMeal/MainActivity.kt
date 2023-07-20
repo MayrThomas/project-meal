@@ -34,6 +34,7 @@ import at.thomas.mayr.projectMeal.room.entities.IngredientUnit
 import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
+import at.thomas.mayr.projectMeal.util.Utils
 import at.thomas.mayr.projectMeal.view.EmptyRecipeGridItem
 import at.thomas.mayr.projectMeal.view.MealFAB
 import at.thomas.mayr.projectMeal.view.RecipeGridItem
@@ -48,34 +49,23 @@ class MainActivity : ComponentActivity() {
             ProjectMealTheme {
                 // A surface container using the 'background' color from the theme
                 Scaffold(
-                    topBar = { TopAppBar(
-                        title = { Text(text = "Recipes")},
-                        colors = TopAppBarDefaults.smallTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            scrolledContainerColor = MaterialTheme.colorScheme.primary,
-                            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                    topBar = {
+                        TopAppBar(
+                            title = { Text(text = "Recipes") },
+                            colors = TopAppBarDefaults.smallTopAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                scrolledContainerColor = MaterialTheme.colorScheme.primary,
+                                navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                                titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                                actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         )
-                    )},
+                    },
                     floatingActionButton = {
                         MealFAB(
                             icon = Icons.Default.Add,
                             contentDescription = "Add test recipe",
-                            onClick = {
-                                val testRecipe = Recipe(name = "TEST-RECIPE-NAME")
-                                val lastRecipe = repository.insertRecipe(testRecipe)
-
-                                val testIngredient = Ingredient(
-                                    name = "Tomate",
-                                    recipeCreatorId = lastRecipe.recipeId,
-                                    ingredientUnit = IngredientUnit.G,
-                                    amount = 150f
-                                )
-
-                                repository.insertIngredient(testIngredient)
-                                repository.insertIngredient(testIngredient)
-                            }
+                            onClick = { createTestRecipe() }
                         )
                     },
                     floatingActionButtonPosition = FabPosition.End
@@ -96,7 +86,8 @@ class MainActivity : ComponentActivity() {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)) {
+                .padding(paddingValues)
+        ) {
             MainScreen(repository.allRecipes)
         }
     }
@@ -105,7 +96,7 @@ class MainActivity : ComponentActivity() {
     fun MainScreen(allRecipes: LiveData<List<RecipeWithIngredient>>) {
         val recipes by allRecipes.observeAsState(initial = emptyList())
 
-        if(recipes.isEmpty()) {
+        if (recipes.isEmpty()) {
             EmptyRecipeGridItem()
         } else {
             LazyVerticalGrid(
@@ -117,10 +108,33 @@ class MainActivity : ComponentActivity() {
                 items(recipes) { recipeWithIngredients ->
                     RecipeGridItem(
                         recipeWithIngredients = recipeWithIngredients,
-                        onClick = { Toast.makeText(applicationContext, "Click on recipe with id ${recipeWithIngredients.recipe.recipeId}", Toast.LENGTH_SHORT).show()}
+                        onClick = {
+                            Toast.makeText(
+                                applicationContext,
+                                "Click on recipe with id ${recipeWithIngredients.recipe.recipeId}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     )
                 }
             }
         }
+    }
+
+    private fun createTestRecipe() {
+
+        val testRecipe = Recipe(name = "TEST-RECIPE-NAME", image = Utils.bitmapToBase64(resources))
+        val lastRecipe = repository.insertRecipe(testRecipe)
+
+        val testIngredient = Ingredient(
+            name = "Tomate",
+            recipeCreatorId = lastRecipe.recipeId,
+            ingredientUnit = IngredientUnit.G,
+            amount = 150f
+        )
+
+        repository.insertIngredient(testIngredient)
+        repository.insertIngredient(testIngredient)
+
     }
 }

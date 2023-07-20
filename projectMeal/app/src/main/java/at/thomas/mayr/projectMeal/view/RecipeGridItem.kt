@@ -14,14 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import at.thomas.mayr.projectMeal.R
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
+import at.thomas.mayr.projectMeal.util.Utils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,7 +39,7 @@ fun RecipeGridItem(recipeWithIngredients: RecipeWithIngredient, onClick: () -> U
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                ImageBitmap.imageResource(id = R.drawable.placeholder_food),
+                Utils.base64ToBitmap(recipeWithIngredients.recipe.image),
                 contentDescription = "image of the food from the recipe",
             )
             Text(text = recipeWithIngredients.recipe.name,
