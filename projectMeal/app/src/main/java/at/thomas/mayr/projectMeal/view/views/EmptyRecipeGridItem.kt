@@ -1,9 +1,10 @@
-package at.thomas.mayr.projectMeal.view
+package at.thomas.mayr.projectMeal.view.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -17,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import at.thomas.mayr.projectMeal.R
 
 @Composable
-fun EmptyRecipeGridItem() {
+fun EmptyRecipeGridItem(paddingValues: PaddingValues) {
     Box(
-        Modifier.fillMaxSize()
+        Modifier.fillMaxSize().padding(paddingValues)
     ) {
         Column(
             Modifier.align(Alignment.Center),

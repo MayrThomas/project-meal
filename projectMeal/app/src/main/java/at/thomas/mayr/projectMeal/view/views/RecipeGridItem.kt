@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.view
+package at.thomas.mayr.projectMeal.view.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,8 @@ fun RecipeGridItem(recipeWithIngredients: RecipeWithIngredient, onClick: () -> U
                 Utils.base64ToBitmap(recipeWithIngredients.recipe.image),
                 contentDescription = "image of the food from the recipe",
             )
-            Text(text = recipeWithIngredients.recipe.name,
+            Text(
+                text = recipeWithIngredients.recipe.name,
                 fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Visible,
                 textAlign = TextAlign.Center
