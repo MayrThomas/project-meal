@@ -9,5 +9,6 @@ data class Recipe (
     @PrimaryKey(autoGenerate = true)
     var recipeId: Long = 0,
     var name: String = "",
-    var image: String = ""
+    var image: String = "",
+    var steps: List<String> = listOf()
 )
