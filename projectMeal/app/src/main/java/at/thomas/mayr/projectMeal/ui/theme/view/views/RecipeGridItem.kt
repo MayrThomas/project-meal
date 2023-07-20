@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.view
+package at.thomas.mayr.projectMeal.ui.theme.view.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
-import at.thomas.mayr.projectMeal.util.Utils
+import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,10 +39,11 @@ fun RecipeGridItem(recipeWithIngredients: RecipeWithIngredient, onClick: () -> U
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Image(
-                Utils.base64ToBitmap(recipeWithIngredients.recipe.image),
+                ImageConversionUtils.base64ToBitmap(recipeWithIngredients.recipe.image),
                 contentDescription = "image of the food from the recipe",
             )
-            Text(text = recipeWithIngredients.recipe.name,
+            Text(
+                text = recipeWithIngredients.recipe.name,
                 fontWeight = FontWeight.Bold,
                 overflow = TextOverflow.Visible,
                 textAlign = TextAlign.Center
