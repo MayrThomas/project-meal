@@ -10,10 +10,4 @@ data class RecipeWithIngredient (
         entityColumn = "recipeCreatorId"
     )
     var ingredients: List<Ingredient>
-
-    /*
-        TODO:   create list for steps of recipe
-                create steps entity
-                with stepDescription, stepNumber, recipeCreatorId
-     */
 )

@@ -70,7 +70,11 @@ class MainActivity : ComponentActivity() {
         fun createTestRecipe(resources: Resources) {
 
             val testRecipe =
-                Recipe(name = "TEST-RECIPE-NAME", image = ImageConversionUtils.bitmapToBase64(resources))
+                Recipe(
+                    name = "TEST-RECIPE-NAME",
+                    image = ImageConversionUtils.bitmapToBase64(resources),
+                    steps = listOf("Cut everything into fine cubes", "Mix together and enjoy")
+                )
             val lastRecipe = repository.insertRecipe(testRecipe)
 
             val testIngredient = Ingredient(
