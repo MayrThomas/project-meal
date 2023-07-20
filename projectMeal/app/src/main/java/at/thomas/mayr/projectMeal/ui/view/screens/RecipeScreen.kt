@@ -1,5 +1,6 @@
 package at.thomas.mayr.projectMeal.ui.view.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,7 @@ fun RecipeScreen(navController: NavController, recipe: RecipeWithIngredient) {
         },
         floatingActionButton = {
             MealFAB(
-                onClick = { /*TODO*/ },
+                onClick = { Log.d("RECIPE SCREEN", "Add ingredients to shopping list") },
                 icon = Icons.Default.ShoppingCart,
                 contentDescription = "Create shopping list from recipe"
             )
