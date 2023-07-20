@@ -17,7 +17,7 @@ import at.thomas.mayr.projectMeal.room.entities.IngredientUnit
 import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
-import at.thomas.mayr.projectMeal.util.Utils
+import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 import at.thomas.mayr.projectMeal.ui.theme.view.screens.MainScreen
 import at.thomas.mayr.projectMeal.ui.theme.view.screens.RecipeScreen
 
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         fun createTestRecipe(resources: Resources) {
 
             val testRecipe =
-                Recipe(name = "TEST-RECIPE-NAME", image = Utils.bitmapToBase64(resources))
+                Recipe(name = "TEST-RECIPE-NAME", image = ImageConversionUtils.bitmapToBase64(resources))
             val lastRecipe = repository.insertRecipe(testRecipe)
 
             val testIngredient = Ingredient(

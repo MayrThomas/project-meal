@@ -16,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
-import at.thomas.mayr.projectMeal.util.Utils
+import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +47,7 @@ fun RecipeScreen(navController: NavController, recipe: RecipeWithIngredient) {
         },
     ) {
         Image(
-            bitmap = Utils.base64ToBitmap(recipe.recipe.image),
+            bitmap = ImageConversionUtils.base64ToBitmap(recipe.recipe.image),
             contentDescription = "Image of Meal",
             modifier = Modifier.padding(it)
         )

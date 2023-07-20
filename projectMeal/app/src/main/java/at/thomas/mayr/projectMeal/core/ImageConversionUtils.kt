@@ -1,4 +1,4 @@
-package at.thomas.mayr.projectMeal.util
+package at.thomas.mayr.projectMeal.core
 
 import android.content.res.Resources
 import android.graphics.Bitmap
@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import at.thomas.mayr.projectMeal.R
 import java.io.ByteArrayOutputStream
 
-object Utils {
+object ImageConversionUtils {
     fun bitmapToBase64(resources: Resources): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         val image = BitmapFactory.decodeResource(resources, R.drawable.placeholder_food)
