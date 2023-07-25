@@ -18,6 +18,7 @@ import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
 import at.thomas.mayr.projectMeal.core.ImageConversionUtils
+import at.thomas.mayr.projectMeal.ui.view.screens.AddRecipeScreen
 import at.thomas.mayr.projectMeal.ui.view.screens.MainScreen
 import at.thomas.mayr.projectMeal.ui.view.screens.RecipeScreen
 
@@ -58,6 +59,12 @@ class MainActivity : ComponentActivity() {
                             recipe = repository.allRecipes.value
                                 ?.find { it.recipe.recipeId == recipeId }
                                 ?: RecipeWithIngredient(Recipe(), listOf())
+                        )
+                    }
+                    composable("add") {
+                        AddRecipeScreen(
+                            navController = navController,
+                            repository = repository
                         )
                     }
                 }
