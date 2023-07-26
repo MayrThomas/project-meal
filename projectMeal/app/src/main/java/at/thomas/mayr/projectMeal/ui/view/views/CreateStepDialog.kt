@@ -15,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -30,7 +29,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateStepDialog(setShowDialog: (Boolean) -> Unit, addStep: (String) -> Unit) {
     val stepDescription = remember { mutableStateOf("") }
