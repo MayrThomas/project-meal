@@ -35,7 +35,9 @@ fun CreateIngredientDialog(setShowDialog: (Boolean) -> Unit, addIngredient: (Ing
     val ingredientUnit = remember { mutableStateOf(unitList[0]) }
     val expanded = remember { mutableStateOf(false) }
 
-    Dialog(onDismissRequest = { setShowDialog(false) }) {
+    Dialog(
+        onDismissRequest = { setShowDialog(false) }
+    ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
             color = MaterialTheme.colorScheme.surface
