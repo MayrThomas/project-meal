@@ -1,30 +1,30 @@
 package at.thomas.mayr.projectMeal
 
-import android.content.res.Resources
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import at.thomas.mayr.projectMeal.room.MealDatabase
 import at.thomas.mayr.projectMeal.room.MealRepository
-import at.thomas.mayr.projectMeal.room.entities.Ingredient
-import at.thomas.mayr.projectMeal.room.entities.IngredientUnit
 import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.theme.ProjectMealTheme
-import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 import at.thomas.mayr.projectMeal.ui.view.screens.AddRecipeScreen
 import at.thomas.mayr.projectMeal.ui.view.screens.MainScreen
 import at.thomas.mayr.projectMeal.ui.view.screens.RecipeScreen
 
 class MainActivity : ComponentActivity() {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,7 +64,8 @@ class MainActivity : ComponentActivity() {
                     composable("add") {
                         AddRecipeScreen(
                             navController = navController,
-                            repository = repository
+                            repository = repository,
+                            activity = this@MainActivity
                         )
                     }
                 }
@@ -72,28 +73,38 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if(isGranted) {
+            Log.i("ProjectMeal", "isGranted")
+        } else {
+            Log.i("ProjectMeal", "notGranted")
+        }
+    }
+
+    fun requestCameraPermission(
+        showCamera: MutableState<Boolean>
+    ) {
+        when {
+            ContextCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                Log.i("ProjectMeal", "Permission already granted")
+                showCamera.value = true
+            }
+
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                android.Manifest.permission.CAMERA
+            ) -> Log.i("ProjectMeal", "Show camera permission dialog")
+
+            else -> requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+        }
+    }
+
     companion object {
         lateinit var repository: MealRepository
-        fun createTestRecipe(resources: Resources) {
-
-            val testRecipe =
-                Recipe(
-                    name = "TEST-RECIPE-NAME",
-                    image = ImageConversionUtils.bitmapToBase64(resources),
-                    steps = listOf("Cut everything into fine cubes", "Mix together and enjoy")
-                )
-            val lastRecipe = repository.insertRecipe(testRecipe)
-
-            val testIngredient = Ingredient(
-                name = "Tomate",
-                recipeCreatorId = lastRecipe.recipeId,
-                ingredientUnit = IngredientUnit.G,
-                amount = 150f
-            )
-
-            repository.insertIngredient(testIngredient)
-            repository.insertIngredient(testIngredient)
-
-        }
     }
 }

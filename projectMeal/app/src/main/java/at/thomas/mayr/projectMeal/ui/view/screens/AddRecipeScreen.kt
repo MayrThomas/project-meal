@@ -32,37 +32,44 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import at.thomas.mayr.projectMeal.MainActivity
 import at.thomas.mayr.projectMeal.R
 import at.thomas.mayr.projectMeal.room.MealRepository
 import at.thomas.mayr.projectMeal.room.entities.Ingredient
+import at.thomas.mayr.projectMeal.ui.view.views.CameraView
 import at.thomas.mayr.projectMeal.ui.view.views.CreateIngredientDialog
 import at.thomas.mayr.projectMeal.ui.view.views.CreateStepDialog
+import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddRecipeScreen(navController: NavController, repository: MealRepository) {
+fun AddRecipeScreen(navController: NavController, repository: MealRepository, activity: MainActivity) {
+    val chefHat = ImageBitmap.imageResource(id = R.drawable.chef_hat)
+    val recipeImage = remember { mutableStateOf(chefHat)}
     val recipeName = remember { mutableStateOf(TextFieldValue()) }
     val ingredients = remember { mutableStateListOf<Ingredient>() }
     val steps = remember { mutableStateListOf<String>() }
     val showCreateIngredientDialog = remember { mutableStateOf(false) }
     val showCreateStepDialog = remember { mutableStateOf(false) }
+    val showCameraView = remember { mutableStateOf(false) }
 
     if (showCreateIngredientDialog.value) {
-        CreateIngredientDialog (
+        CreateIngredientDialog(
             setShowDialog = { showCreateIngredientDialog.value = it },
             addIngredient = { ingredients.add(it) }
         )
     }
 
-    if(showCreateStepDialog.value) {
+    if (showCreateStepDialog.value) {
         CreateStepDialog(
             setShowDialog = { showCreateStepDialog.value = it },
-            addStep = { steps.add(it)}
+            addStep = { steps.add(it) }
         )
     }
 
@@ -79,20 +86,36 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository) {
                 )
             )
         }
-    ) {
-        Box (modifier = Modifier
-            .padding(it)
-            .fillMaxSize()) {
+    ) { it ->
+        Box(
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+                if (showCameraView.value) {
+                    CameraView(
+                        executor = Executors.newSingleThreadExecutor(),
+                        onImageCaptured = {proxy ->
+                            val bitmap = proxy.toBitmap().asImageBitmap()
+                            recipeImage.value = bitmap
+                            showCameraView.value = false
+                        },
+                        onError = {
+                            showCameraView.value = false
+                        }
+                    )
+                }
+
                 Image(
-                    bitmap = ImageBitmap.imageResource(id = R.drawable.chef_hat),
-                    contentDescription = "",
+                    bitmap = recipeImage.value,
+                    contentDescription = "Image of food",
                     modifier = Modifier.clickable {
-                        // TODO take image using camera or use image from disk
+                        activity.requestCameraPermission(showCameraView)
                     }
                 )
 
@@ -113,14 +136,17 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository) {
                     IconButton(onClick = {
                         showCreateIngredientDialog.value = true
                     }) {
-                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Add Ingredient Button")
+                        Icon(
+                            imageVector = Icons.Outlined.AddCircle,
+                            contentDescription = "Add Ingredient Button"
+                        )
                     }
                 }
 
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(ingredients) {ingredient ->
+                    items(ingredients) { ingredient ->
                         Text(text = "${ingredient.amount} ${ingredient.ingredientUnit?.name} ${ingredient.name}")
                     }
                 }
@@ -135,14 +161,17 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository) {
                     IconButton(onClick = {
                         showCreateStepDialog.value = true
                     }) {
-                        Icon(imageVector = Icons.Outlined.AddCircle, contentDescription = "Add Ingredient Button")
+                        Icon(
+                            imageVector = Icons.Outlined.AddCircle,
+                            contentDescription = "Add Ingredient Button"
+                        )
                     }
                 }
 
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    itemsIndexed(steps) {index: Int, step: String ->
+                    itemsIndexed(steps) { index: Int, step: String ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
