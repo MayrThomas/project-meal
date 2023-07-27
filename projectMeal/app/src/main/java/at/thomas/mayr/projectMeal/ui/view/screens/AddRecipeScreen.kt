@@ -11,17 +11,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,18 +43,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import at.thomas.mayr.projectMeal.MainActivity
 import at.thomas.mayr.projectMeal.R
+import at.thomas.mayr.projectMeal.core.ImageConversionUtils
 import at.thomas.mayr.projectMeal.room.MealRepository
 import at.thomas.mayr.projectMeal.room.entities.Ingredient
+import at.thomas.mayr.projectMeal.room.entities.Recipe
 import at.thomas.mayr.projectMeal.ui.view.views.CameraView
 import at.thomas.mayr.projectMeal.ui.view.views.CreateIngredientDialog
 import at.thomas.mayr.projectMeal.ui.view.views.CreateStepDialog
+import at.thomas.mayr.projectMeal.ui.view.views.MealFAB
 import java.util.concurrent.Executors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddRecipeScreen(navController: NavController, repository: MealRepository, activity: MainActivity) {
+fun AddRecipeScreen(
+    navController: NavController,
+    repository: MealRepository,
+    activity: MainActivity
+) {
     val chefHat = ImageBitmap.imageResource(id = R.drawable.chef_hat)
-    val recipeImage = remember { mutableStateOf(chefHat)}
+    val recipeImage = remember { mutableStateOf(chefHat) }
     val recipeName = remember { mutableStateOf(TextFieldValue()) }
     val ingredients = remember { mutableStateListOf<Ingredient>() }
     val steps = remember { mutableStateListOf<String>() }
@@ -87,13 +94,42 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     actionIconContentColor = MaterialTheme.colorScheme.onPrimary
                 ),
-                navigationIcon = { Icon(
-                    imageVector = Icons.Filled.Close,
-                    contentDescription = "Close Screen",
-                    modifier = Modifier.clickable {
-                        navController.navigateUp()
-                    }.padding(4.dp)
-                )}
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigateUp()
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "close button"
+                        )
+                    }
+                }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = {
+            MealFAB(
+                onClick = {
+                    val recipe = Recipe(
+                        name = recipeName.value.text,
+                        image = ImageConversionUtils.bitmapToBase64(recipeImage.value.asAndroidBitmap()),
+                        steps = steps.toList()
+                    )
+
+                    val inserted = repository.insertRecipe(recipe)
+
+                    ingredients.forEach {
+                        it.recipeCreatorId = inserted.recipeId
+
+                        repository.insertIngredient(it)
+                    }
+
+                    navController.navigateUp()
+                },
+                icon = Icons.Default.Done,
+                contentDescription = "Save button"
             )
         }
     ) { it ->
@@ -103,14 +139,16 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                 .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (showCameraView.value) {
                     CameraView(
                         executor = Executors.newSingleThreadExecutor(),
-                        onImageCaptured = {proxy ->
+                        onImageCaptured = { proxy ->
                             val matrix = Matrix()
                             matrix.postRotate(90f)
 
@@ -164,10 +202,10 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                     }
                 }
 
-                LazyColumn(
+                Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(ingredients) { ingredient ->
+                    ingredients.forEach { ingredient ->
                         Text(text = "${ingredient.amount} ${ingredient.ingredientUnit?.name} ${ingredient.name}")
                     }
                 }
@@ -189,29 +227,19 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                     }
                 }
 
-                LazyColumn(
+                Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    itemsIndexed(steps) { index: Int, step: String ->
+                    steps.forEachIndexed { index, step ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(text = "$index:", fontWeight = FontWeight.SemiBold)
+                            Text(text = "${index + 1}:", fontWeight = FontWeight.SemiBold)
                             Text(text = step)
                         }
                     }
-                }
-
-                IconButton(
-                    onClick = { /*TODO*/ },
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    colors = IconButtonDefaults.filledIconButtonColors()
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add recipe button")
                 }
             }
         }

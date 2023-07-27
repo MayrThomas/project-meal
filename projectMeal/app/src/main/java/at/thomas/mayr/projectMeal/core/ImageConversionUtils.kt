@@ -1,19 +1,16 @@
 package at.thomas.mayr.projectMeal.core
 
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
-import at.thomas.mayr.projectMeal.R
 import java.io.ByteArrayOutputStream
 
 object ImageConversionUtils {
-    fun bitmapToBase64(resources: Resources): String {
+    fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        val image = BitmapFactory.decodeResource(resources, R.drawable.placeholder_food)
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
 
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
