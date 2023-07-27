@@ -1,5 +1,7 @@
 package at.thomas.mayr.projectMeal.ui.view.screens
 
+import android.graphics.Bitmap
+import android.graphics.Matrix
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -83,7 +86,14 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                     actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
+                navigationIcon = { Icon(
+                    imageVector = Icons.Filled.Close,
+                    contentDescription = "Close Screen",
+                    modifier = Modifier.clickable {
+                        navController.navigateUp()
+                    }.padding(4.dp)
+                )}
             )
         }
     ) { it ->
@@ -101,8 +111,19 @@ fun AddRecipeScreen(navController: NavController, repository: MealRepository, ac
                     CameraView(
                         executor = Executors.newSingleThreadExecutor(),
                         onImageCaptured = {proxy ->
-                            val bitmap = proxy.toBitmap().asImageBitmap()
-                            recipeImage.value = bitmap
+                            val matrix = Matrix()
+                            matrix.postRotate(90f)
+
+                            val bitmap = proxy.toBitmap()
+                            recipeImage.value = Bitmap.createBitmap(
+                                bitmap,
+                                0,
+                                0,
+                                bitmap.width,
+                                bitmap.height,
+                                matrix,
+                                true
+                            ).asImageBitmap()
                             showCameraView.value = false
                         },
                         onError = {
