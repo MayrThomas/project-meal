@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
-import at.thomas.mayr.projectMeal.MainActivity
 import at.thomas.mayr.projectMeal.room.entities.RecipeWithIngredient
 import at.thomas.mayr.projectMeal.ui.view.views.EmptyRecipeGridItem
 import at.thomas.mayr.projectMeal.ui.view.views.MealFAB
@@ -39,7 +38,7 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Recipes") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     scrolledContainerColor = MaterialTheme.colorScheme.primary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
@@ -52,7 +51,7 @@ fun MainScreen(
             MealFAB(
                 icon = Icons.Default.Add,
                 contentDescription = "Add test recipe",
-                onClick = { MainActivity.createTestRecipe(resources) }
+                onClick = { navController.navigate("add") }
             )
         },
         floatingActionButtonPosition = FabPosition.End

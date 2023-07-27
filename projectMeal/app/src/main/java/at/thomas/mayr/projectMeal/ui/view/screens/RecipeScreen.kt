@@ -37,7 +37,7 @@ fun RecipeScreen(navController: NavController, recipe: RecipeWithIngredient) {
         topBar = {
             TopAppBar(
                 title = { Text(text = recipe.recipe.name) },
-                colors = TopAppBarDefaults.smallTopAppBarColors(
+                colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     scrolledContainerColor = MaterialTheme.colorScheme.primary,
                     navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
