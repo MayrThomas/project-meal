@@ -44,9 +44,9 @@ import androidx.navigation.NavController
 import at.thomas.mayr.projectMeal.MainActivity
 import at.thomas.mayr.projectMeal.R
 import at.thomas.mayr.projectMeal.core.ImageConversionUtils
-import at.thomas.mayr.projectMeal.room.MealRepository
 import at.thomas.mayr.projectMeal.room.entities.Ingredient
 import at.thomas.mayr.projectMeal.room.entities.Recipe
+import at.thomas.mayr.projectMeal.ui.model.RecipeViewModel
 import at.thomas.mayr.projectMeal.ui.view.views.CameraView
 import at.thomas.mayr.projectMeal.ui.view.views.CreateIngredientDialog
 import at.thomas.mayr.projectMeal.ui.view.views.CreateStepDialog
@@ -57,7 +57,7 @@ import java.util.concurrent.Executors
 @Composable
 fun AddRecipeScreen(
     navController: NavController,
-    repository: MealRepository,
+    viewModel: RecipeViewModel,
     activity: MainActivity
 ) {
     val chefHat = ImageBitmap.imageResource(id = R.drawable.chef_hat)
@@ -118,12 +118,12 @@ fun AddRecipeScreen(
                         steps = steps.toList()
                     )
 
-                    val inserted = repository.insertRecipe(recipe)
+                    val inserted = viewModel.addNewRecipe(recipe)
 
                     ingredients.forEach {
                         it.recipeCreatorId = inserted.recipeId
 
-                        repository.insertIngredient(it)
+                        viewModel.addNewIngredient(it)
                     }
 
                     navController.navigateUp()

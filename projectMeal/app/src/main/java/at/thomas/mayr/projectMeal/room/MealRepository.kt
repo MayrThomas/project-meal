@@ -1,6 +1,5 @@
 package at.thomas.mayr.projectMeal.room
 
-import androidx.lifecycle.LiveData
 import at.thomas.mayr.projectMeal.room.dao.MealDAO
 import at.thomas.mayr.projectMeal.room.entities.Ingredient
 import at.thomas.mayr.projectMeal.room.entities.Recipe
@@ -9,27 +8,22 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class MealRepository(private val mealDAO: MealDAO) {
+class MealRepository @Inject constructor(private val mealDAO: MealDAO) {
 
-    private val coroutineScope = CoroutineScope(Dispatchers.IO)
-
-    val allRecipes: LiveData<List<RecipeWithIngredient>> = mealDAO.getAllRecipes()
+    val allRecipes: Flow<List<RecipeWithIngredient>> = mealDAO.getAllRecipes()
 
     fun insertRecipe(recipe: Recipe): Recipe {
-        coroutineScope.launch {
-            mealDAO.insertRecipe(recipe)
-        }
+        mealDAO.insertRecipe(recipe)
 
         return getLastInsertedRecipe()
     }
 
     fun insertIngredient(ingredient: Ingredient) {
-        coroutineScope.launch {
-            mealDAO.insertIngredient(ingredient)
-        }
+        mealDAO.insertIngredient(ingredient)
     }
 
     private fun getLastInsertedRecipe(): Recipe = runBlocking {
